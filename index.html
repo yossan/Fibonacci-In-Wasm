@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Fibonacci Calculator in Wasm</title>
+</head>
+<body>
+<h1>Fibonacci Calculator</h1>
+<h2>Finds the nth term in a Fibonacci sequence</h2>
+<label for="number">Enter a number: </label>
+<input type="number" name = "number" placeholder="10">
+<button disabled>Calculation</button>
+<h3 name="output" hidden></h3>
+
+<script type="module">
+import * as wasm from './pkg/fibonacci.js'
+wasm.default().then(() => {
+	run(wasm)
+})
+
+function run(wasm) {
+	const calbt = document.querySelector('button')
+	calbt.disabled = false
+	calbt.addEventListener('click', (event) => {
+		let n = document.querySelector('input[name=number]').value
+		if (!n) {
+			n = 10
+		}
+
+		const fibonacci_cal = wasm.fibonacci_cal()
+		let fibo_nth = fibonacci_cal.get_nth(BigInt(n))
+		console.log(fibo_nth)
+
+		let output = document.querySelector('h3[name=output]')
+		output.hidden = false
+		output.textContent = `The ${n}th fibonacci number is ${fibo_nth}.`
+	})
+}
+</script>
+</body>
+</html>
+
+
+
